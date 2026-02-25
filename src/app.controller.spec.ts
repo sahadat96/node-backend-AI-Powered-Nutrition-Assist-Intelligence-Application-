@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { defineConfig } from 'prisma/config';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -19,4 +20,11 @@ describe('AppController', () => {
       expect(appController.getHello()).toBe('Hello World!');
     });
   });
+});
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  datasource: {
+    url: process.env.DATABASE_URL,
+  },
 });
