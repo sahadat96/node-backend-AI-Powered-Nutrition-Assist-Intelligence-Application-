@@ -5,6 +5,7 @@ import { User } from '../../domain/entities/user.entity';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
+
   constructor(private readonly prisma: PrismaService) {}
 
   async findByEmail(email: string): Promise<User | null> {
@@ -43,4 +44,5 @@ export class UserRepository implements IUserRepository {
       created.updatedAt,
     );
   }
+  
 }
