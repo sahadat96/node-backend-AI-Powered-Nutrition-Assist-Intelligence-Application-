@@ -4,7 +4,8 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import morgan from 'morgan'; 
-
+import cookieParser from 'cookie-parser';
+ 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -23,7 +24,7 @@ async function bootstrap() {
     app.use(morgan('dev')); 
   } else {
     app.use(morgan('combined')); 
-  } 
+  }
 
   app.setGlobalPrefix('api');
   app.enableVersioning({
@@ -42,6 +43,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   const port = configService.get<number>('PORT') || 3000;
+  app.use(cookieParser());
   await app.listen(port);
 
   console.log(`Application is running on: http://localhost:${port}/api/v1`);

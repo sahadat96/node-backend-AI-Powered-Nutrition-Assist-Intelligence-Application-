@@ -4,6 +4,7 @@ export class User {
         public email: string,
         public password: string,
         public role: string ="USER",
+        public refreshToken?: string | null,
         public createdAt?: Date,
         public updatedAt?: Date, 
     ) {}

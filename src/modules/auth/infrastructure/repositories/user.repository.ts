@@ -20,6 +20,7 @@ export class UserRepository implements IUserRepository {
       user.email,
       user.password,
       user.role,
+      user.refreshToken,
       user.createdAt,
       user.updatedAt,
     );
@@ -40,9 +41,46 @@ export class UserRepository implements IUserRepository {
       created.email,
       created.password,
       created.role,
+      created.refreshToken,
       created.createdAt,
       created.updatedAt,
     );
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if(!user) return null;
+
+    return new User(
+      user.id,
+      user.email,
+      user.password,
+      user.role,
+      user.refreshToken,
+      user.createdAt,
+      user.updatedAt
+    );
+  }
+
+  async getRefreshToken(userId: string): Promise<string | null>{
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { refreshToken: true },
+    });
+
+    if(!user || !user.refreshToken){
+      return null;
+    }
+    
+    return user.refreshToken;
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string | null): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId},
+      data: { refreshToken },
+    });
   }
   
 }
