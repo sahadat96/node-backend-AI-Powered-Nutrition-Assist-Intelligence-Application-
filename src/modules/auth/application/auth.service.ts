@@ -4,9 +4,10 @@ import { User } from '../domain/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
-import { RegisterDto } from '../presentation/dto/register.dto/register.dto';
-import { LoginDto } from '../presentation/dto/register.dto/login.dto';
+import { RegisterDto } from '../presentation/dto/register dto/register.dto';
+import { LoginDto } from '../presentation/dto/login dto/login.dto';
 import { ConfigService } from '@nestjs/config';
+
 
 @Injectable()
 export class AuthService {
@@ -90,21 +91,20 @@ export class AuthService {
     const token = await this.getTokens(user.id, user.email, user.role);
 
     await this.updateRefreshTokenHash(user.id, token.refreshToken);
-
-    return token; 
     
-    // return {
-    //   success: true,
-    //   message: 'Login successful',
-    //   data: {
-    //     accessToken,
-    //     user: {
-    //       id: user.id,
-    //       email: user.email,
-    //       role: user.role,
-    //     },
-    //   },
-    // };
+    return {
+      success: true,
+      message: 'Login successful',
+      data: {
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+      },
+    };
     
   }
 
@@ -129,9 +129,9 @@ export class AuthService {
     const token = await this.getTokens(user.id, user.email, user.role);
 
     await this.updateRefreshTokenHash(user.id, token.refreshToken);
-  }
 
- 
+    return token;
+  }
 
 }
 

@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import morgan from 'morgan'; 
 import cookieParser from 'cookie-parser';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
  
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +28,7 @@ async function bootstrap() {
   }
 
   app.setGlobalPrefix('api');
+
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1', 
@@ -40,10 +42,14 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalInterceptors(new ResponseInterceptor());
+
   app.enableShutdownHooks();
 
   const port = configService.get<number>('PORT') || 3000;
+  
   app.use(cookieParser());
+
   await app.listen(port);
 
   console.log(`Application is running on: http://localhost:${port}/api/v1`);
