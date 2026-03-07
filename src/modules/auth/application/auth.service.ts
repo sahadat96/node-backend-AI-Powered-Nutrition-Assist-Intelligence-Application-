@@ -45,8 +45,11 @@ export class AuthService {
     const savedUser = await this.userRepository.create(newUser);
 
     return {
-      id: savedUser.id,
-      email: savedUser.email,
+      message: 'Registration Successfull',
+      data: {
+        id: savedUser.id,
+        email: savedUser.email,
+      }
     };
   }
 
