@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import morgan from 'morgan'; 
 import cookieParser from 'cookie-parser';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
  
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -43,6 +44,8 @@ async function bootstrap() {
   );
 
   app.useGlobalInterceptors(new ResponseInterceptor());
+
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   app.enableShutdownHooks();
 
