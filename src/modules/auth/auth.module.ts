@@ -6,9 +6,13 @@ import { UserRepository } from './infrastructure/repositories/user.repository';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from 'src/common/middleware/logger.middleware';
+import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports:[
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService], 
@@ -28,8 +32,12 @@ import { LoggerMiddleware } from 'src/common/middleware/logger.middleware';
       provide: 'IUserRepository',
       useClass: UserRepository,
     },
+    JwtStrategy,
   ],
-  exports: [JwtModule],
+  exports: [
+    JwtModule,
+    PassportModule,
+  ],
 })
 
 export class AuthModule implements NestModule {
