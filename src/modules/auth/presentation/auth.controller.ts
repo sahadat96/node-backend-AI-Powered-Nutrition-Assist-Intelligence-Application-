@@ -19,7 +19,8 @@ export class AuthController {
   ) {}
 
   @Get('test')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles('USER')
   get() {
     return 'Sohel Athentication test Success';
   }

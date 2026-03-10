@@ -19,7 +19,7 @@ export class UserRepository implements IUserRepository {
       user.id,
       user.email,
       user.password,
-      user.role,
+      //user.role,
       user.refreshToken,
       user.createdAt,
       user.updatedAt,
