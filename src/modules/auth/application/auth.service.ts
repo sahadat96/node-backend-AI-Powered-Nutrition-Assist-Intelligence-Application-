@@ -4,8 +4,8 @@ import { User } from '../domain/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
-import { RegisterDto } from '../presentation/dto/register dto/register.dto';
-import { LoginDto } from '../presentation/dto/login dto/login.dto';
+import { RegisterDto } from '../presentation/dto/registerDto/register.dto';
+import { LoginDto } from '../presentation/dto/loginDto/login.dto';
 import { ConfigService } from '@nestjs/config';
 
 
@@ -35,12 +35,11 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User(
-      uuidv4(),
-      email,
-      hashedPassword,
-      'USER',
-    );
+    const newUser = new User({
+      id: uuidv4(),
+      email: email,
+      password: hashedPassword,
+    });
 
     const savedUser = await this.userRepository.create(newUser);
 
@@ -49,12 +48,14 @@ export class AuthService {
       data: {
         id: savedUser.id,
         email: savedUser.email,
+        role: savedUser.role?.name,
       }
     };
   }
 
-  private async getTokens(userId: string, email: string, role: string) {
-    const jwtPayload = { sub: userId, email, role };
+  private async getTokens(userId: string, email: string, roleName: string) {
+
+    const jwtPayload = { sub: userId, email, roleName };
 
     const[accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(jwtPayload, {
@@ -91,7 +92,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Creadential')
     }
 
-    const token = await this.getTokens(user.id, user.email, user.role);
+    const token = await this.getTokens(user.id, user.email, user.role.name);
 
     await this.updateRefreshTokenHash(user.id, token.refreshToken);
     
@@ -104,7 +105,7 @@ export class AuthService {
         user: {
           id: user.id,
           email: user.email,
-          role: user.role,
+          role: user.role?.name,
         },
       },
     };

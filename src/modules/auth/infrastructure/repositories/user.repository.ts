@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 import { User } from '../../domain/entities/user.entity';
+import { UserMapper } from '../mappers/user.mapper';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -9,61 +10,48 @@ export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findByEmail(email: string): Promise<User | null> {
+
     const user = await this.prisma.user.findUnique({
       where: { email },
+      include: { role:true }
     });
 
     if (!user) return null;
 
-    return new User(
-      user.id,
-      user.email,
-      user.password,
-      //user.role,
-      user.refreshToken,
-      user.createdAt,
-      user.updatedAt,
-    );
+    return UserMapper.toDomain(user);
   }
 
   async create(user: User): Promise<User> {
+
     const created = await this.prisma.user.create({
       data: {
         id: user.id,
         email: user.email,
         password: user.password,
-        role: user.role,
+        role: {
+          connect: { name: 'USER' }
+        } 
       },
+      include: { role: true }
     });
 
-    return new User(
-      created.id,
-      created.email,
-      created.password,
-      created.role,
-      created.refreshToken,
-      created.createdAt,
-      created.updatedAt,
-    );
+   return UserMapper.toDomain(created);
   }
 
   async findById(id: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    const user = await this.prisma.user.findUnique({
+       where: { id },
+       include: { role: true }
+       });
 
     if(!user) return null;
 
-    return new User(
-      user.id,
-      user.email,
-      user.password,
-      user.role,
-      user.refreshToken,
-      user.createdAt,
-      user.updatedAt
-    );
+    return UserMapper.toDomain(user);
   }
 
   async getRefreshToken(userId: string): Promise<string | null>{
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { refreshToken: true },
@@ -77,6 +65,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async updateRefreshToken(userId: string, refreshToken: string | null): Promise<void> {
+    
     await this.prisma.user.update({
       where: { id: userId},
       data: { refreshToken },

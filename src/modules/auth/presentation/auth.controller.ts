@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
-import { RegisterDto } from './dto/register dto/register.dto';
-import { LoginDto } from './dto/login dto/login.dto';
+import { RegisterDto } from './dto/registerDto/register.dto';
+import { LoginDto } from './dto/loginDto/login.dto';
 import type { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from '../infrastructure/guards/jwt-auth.guard';
@@ -20,7 +20,7 @@ export class AuthController {
 
   @Get('test')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles('USER')
+  @Roles('ADMIN')
   get() {
     return 'Sohel Athentication test Success';
   }
