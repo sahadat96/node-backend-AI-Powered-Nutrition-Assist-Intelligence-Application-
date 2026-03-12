@@ -9,6 +9,8 @@ import { RoleGuard } from 'src/common/guards/roles.guard';
 import { PermissionGuard } from 'src/common/guards/permissions.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { Permission } from 'src/common/enums/permission.enum';
+import { Role } from 'src/common/enums/role.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -19,8 +21,9 @@ export class AuthController {
   ) {}
 
   @Get('test')
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles('USER')
+  @UseGuards(JwtAuthGuard, RoleGuard, PermissionGuard )
+  @Roles(Role.USER)
+  @Permissions(Permission.VIEW_USER)
   get() {
     return 'Sohel Athentication test Success';
   }
@@ -53,7 +56,7 @@ export class AuthController {
       }
     };
   }
-
+ 
  @Post('refresh')
   async refresh(
     @Req() req: Request, 

@@ -130,7 +130,7 @@ export class AuthService {
       throw new ForbiddenException('Access Denied');
     }
 
-    const token = await this.getTokens(user.id, user.email, user.role);
+    const token = await this.getTokens(user.id, user.email, user.role.name);
 
     await this.updateRefreshTokenHash(user.id, token.refreshToken);
 

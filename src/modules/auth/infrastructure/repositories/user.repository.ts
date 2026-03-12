@@ -42,7 +42,18 @@ export class UserRepository implements IUserRepository {
 
     const user = await this.prisma.user.findUnique({
        where: { id },
-       include: { role: true }
+       include: {
+        role: {
+          include: {
+            permissions: {
+              include: {
+                permission: true,
+              }
+            }
+          }
+        }
+       }
+
        });
 
     if(!user) return null;

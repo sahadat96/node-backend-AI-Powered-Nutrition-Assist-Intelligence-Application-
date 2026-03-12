@@ -4,6 +4,7 @@ export interface UserProps {
   password: string;
   roleId?: string;
   role?: any;
+  permissions?: string[];
   refreshToken?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
@@ -15,6 +16,7 @@ export class User {
   public password: string;
   public roleId?: string;
   public role?: any;
+  public permissions?: string[];
   public refreshToken?: string | null;
   public createdAt?: Date;
   public updatedAt?: Date;
@@ -25,6 +27,7 @@ export class User {
     this.password = props.password;
     this.roleId = props.roleId;
     this.role = props.role;
+    this.permissions = props.permissions;
     this.refreshToken = props.refreshToken;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
