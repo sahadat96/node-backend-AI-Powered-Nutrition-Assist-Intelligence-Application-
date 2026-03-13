@@ -17,4 +17,11 @@ export default () => ({
 //     expiresIn: process.env.JWT_EXPIRES_IN || '15m',
 //     refreshSecret: process.env.JWT_REFRESH_SECRET,
   },
+   google: {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackUrl: process.env.GOOGLE_CALLBACK_URL,
+  },
+
+  
 });
