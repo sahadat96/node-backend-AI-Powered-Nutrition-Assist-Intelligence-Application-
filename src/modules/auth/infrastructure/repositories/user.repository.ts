@@ -21,6 +21,31 @@ export class UserRepository implements IUserRepository {
     return UserMapper.toDomain(user);
   }
 
+ async update(userId: string, updateData: Partial<User>): Promise<User> {
+    
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        googleId: updateData.googleId,
+        provider: updateData.provider,
+        password: updateData.password,
+        refreshToken: updateData.refreshToken,
+      },
+      
+      include: { 
+        role: {
+          include: {
+            permissions: {
+              include: { permission: true }
+            }
+          }
+        } 
+      }
+    });
+
+    return UserMapper.toDomain(updatedUser);
+  }
+
   async create(user: User): Promise<User> {
 
     const created = await this.prisma.user.create({

@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from 'src/common/middleware/logger.middleware';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { GoogleStrategy } from './infrastructure/strategies/google.strategy';
 
 @Module({
   imports:[
@@ -33,6 +34,7 @@ import { PassportModule } from '@nestjs/passport';
       useClass: UserRepository,
     },
     JwtStrategy,
+    GoogleStrategy
   ],
   exports: [
     JwtModule,

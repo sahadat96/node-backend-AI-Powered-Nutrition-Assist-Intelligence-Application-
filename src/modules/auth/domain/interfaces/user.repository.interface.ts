@@ -12,4 +12,6 @@ export interface IUserRepository {
 
     getRefreshToken(userId: string): Promise<string | null>;
 
+    update(userId: string, updateDate: Partial<User>): Promise<User>
+
 }

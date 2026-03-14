@@ -19,6 +19,35 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
+  async validateGoogleLogin(profile: any) {
+
+    const { email, googleId } = profile;
+
+    let user = await this.userRepository.findByEmail(email);
+
+    if (user) {
+    
+      if (!user.googleId) {
+         await this.userRepository.update(user.id, { googleId, provider: 'GOOGLE' });
+      }
+    } else {
+
+      const newUser = new User({
+        id: uuidv4(),
+        email: email,
+        password: null, 
+      });
+
+      user = await this.userRepository.create(newUser);
+    }
+
+    const tokens = await this.getTokens(user.id, user.email, user.role.name);
+    
+    await this.updateRefreshTokenHash(user.id, tokens.refreshToken);
+
+    return { user, tokens };
+  }
+
   async register(registerDto: RegisterDto) {
     
     const { email, password, confirmPassword } = registerDto;

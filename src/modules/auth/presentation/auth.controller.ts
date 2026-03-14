@@ -11,6 +11,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { Permission } from 'src/common/enums/permission.enum';
 import { Role } from 'src/common/enums/role.enum';
+import { GoogleOAuthGuard } from 'src/common/guards/google-oauth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -19,6 +20,30 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly jwtService: JwtService
   ) {}
+
+  @Get('google')
+  @UseGuards(GoogleOAuthGuard)
+  async googleAuth(@Req() req){
+
+  }
+
+  @Get('google/callback')
+  @UseGuards(GoogleOAuthGuard) 
+  async googleAuthRedirect(@Req() req, @Res() res: Response) {
+    
+    const { tokens } = await this.authService.validateGoogleLogin(req.user);
+
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+  //  const frontendUrl = this.configService.get<string>('FRONTEND_OAUTH_SUCCESS_URL');
+    
+  //   return res.redirect(`${frontendUrl}?token=${tokens.accessToken}`);
+  }
 
   @Get('test')
   @UseGuards(JwtAuthGuard, RoleGuard, PermissionGuard )
