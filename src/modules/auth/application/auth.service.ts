@@ -7,17 +7,35 @@ import { v4 as uuidv4 } from 'uuid';
 import { RegisterDto } from '../presentation/dto/registerDto/register.dto';
 import { LoginDto } from '../presentation/dto/loginDto/login.dto';
 import { ConfigService } from '@nestjs/config';
+import { OAuth2Client } from 'google-auth-library';
 
 
 @Injectable()
 export class AuthService {
-  
+  private googleClient: OAuth2Client;
+
   constructor(
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+     this.googleClient = new OAuth2Client(
+     this.configService.get<string>('GOOGLE_CLIENT_ID'),
+     this.configService.get<string>('GOOGLE_CLIENT_SECRET'),
+     this.configService.get<string>('GOOGLE_CALLBACK_URL')
+    );
+  }
+
+   getGoogleAuthUrl(): string {
+    const url = this.googleClient.generateAuthUrl({
+      access_type: 'offline', 
+      scope: ['email', 'profile'],
+      prompt: 'consent'
+    });
+
+    return url;
+  }
 
   async validateGoogleLogin(profile: any) {
 

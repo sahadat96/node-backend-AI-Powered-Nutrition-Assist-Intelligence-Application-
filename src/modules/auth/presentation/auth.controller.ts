@@ -21,10 +21,12 @@ export class AuthController {
     private readonly jwtService: JwtService
   ) {}
 
-  @Get('google')
-  @UseGuards(GoogleOAuthGuard)
+  @Get('google/url')
   async googleAuth(@Req() req){
 
+    return {
+      url: this.authService.getGoogleAuthUrl(),
+    };
   }
 
   @Get('google/callback')
@@ -43,6 +45,8 @@ export class AuthController {
   //  const frontendUrl = this.configService.get<string>('FRONTEND_OAUTH_SUCCESS_URL');
     
   //   return res.redirect(`${frontendUrl}?token=${tokens.accessToken}`);
+
+  return "sohel tumi vhalo chele";
   }
 
   @Get('test')
