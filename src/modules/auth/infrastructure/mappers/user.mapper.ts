@@ -11,6 +11,10 @@ export class UserMapper {
       password: raw.password,
       roleId: raw.roleId,
       role: raw.role,
+
+      googleId:raw.googleId,
+      provider:raw.provider,
+
       permissions: extractedPermissions,
       refreshToken: raw.refreshToken,
       createdAt: raw.createdAt,

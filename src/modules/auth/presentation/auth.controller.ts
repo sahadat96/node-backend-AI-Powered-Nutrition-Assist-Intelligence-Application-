@@ -12,13 +12,15 @@ import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { Permission } from 'src/common/enums/permission.enum';
 import { Role } from 'src/common/enums/role.enum';
 import { GoogleOAuthGuard } from 'src/common/guards/google-oauth.guard';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
   
   constructor(
     private readonly authService: AuthService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly configService:ConfigService
   ) {}
 
   @Get('google/url')
@@ -42,11 +44,10 @@ export class AuthController {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-  //  const frontendUrl = this.configService.get<string>('FRONTEND_OAUTH_SUCCESS_URL');
+    const frontendUrl = this.configService.get<string>('redirect_url.frontEndRedirect');
     
-  //   return res.redirect(`${frontendUrl}?token=${tokens.accessToken}`);
+   return res.redirect(`${frontendUrl}?token=${tokens.accessToken}`);
 
-  return "sohel tumi vhalo chele";
   }
 
   @Get('test')

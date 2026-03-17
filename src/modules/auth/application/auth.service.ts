@@ -9,7 +9,6 @@ import { LoginDto } from '../presentation/dto/loginDto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 
-
 @Injectable()
 export class AuthService {
   private googleClient: OAuth2Client;
@@ -21,9 +20,9 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {
      this.googleClient = new OAuth2Client(
-     this.configService.get<string>('GOOGLE_CLIENT_ID'),
-     this.configService.get<string>('GOOGLE_CLIENT_SECRET'),
-     this.configService.get<string>('GOOGLE_CALLBACK_URL')
+     this.configService.get<string>('google.clientId'),
+     this.configService.get<string>('google.clientSecret'),
+     this.configService.get<string>('google.callbackUrl')
     );
   }
 
@@ -54,6 +53,8 @@ export class AuthService {
         id: uuidv4(),
         email: email,
         password: null, 
+        googleId: googleId, 
+        provider: 'GOOGLE',
       });
 
       user = await this.userRepository.create(newUser);

@@ -53,6 +53,10 @@ export class UserRepository implements IUserRepository {
         id: user.id,
         email: user.email,
         password: user.password,
+
+        googleId: user.googleId,   
+        provider: user.provider,
+        
         role: {
           connect: { name: 'USER' }
         } 
