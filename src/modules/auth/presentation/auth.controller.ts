@@ -13,6 +13,7 @@ import { Permission } from 'src/common/enums/permission.enum';
 import { Role } from 'src/common/enums/role.enum';
 import { GoogleOAuthGuard } from 'src/common/guards/google-oauth.guard';
 import { ConfigService } from '@nestjs/config';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -24,14 +25,15 @@ export class AuthController {
   ) {}
 
   @Get('google/url')
+  @Public()
   async googleAuth(@Req() req){
-
     return {
       url: this.authService.getGoogleAuthUrl(),
     };
   }
 
   @Get('google/callback')
+  @Public()
   @UseGuards(GoogleOAuthGuard) 
   async googleAuthRedirect(@Req() req, @Res() res: Response) {
     
@@ -47,11 +49,10 @@ export class AuthController {
     const frontendUrl = this.configService.get<string>('redirect_url.frontEndRedirect');
     
    return res.redirect(`${frontendUrl}?token=${tokens.accessToken}`);
-
   }
 
   @Get('test')
-  @UseGuards(JwtAuthGuard, RoleGuard, PermissionGuard )
+  @UseGuards(RoleGuard, PermissionGuard )
   @Roles(Role.USER)
   @Permissions(Permission.VIEW_USER)
   get() {
@@ -59,11 +60,13 @@ export class AuthController {
   }
 
   @Post('register')
+  @Public()
     register(@Body() registerDto: RegisterDto ) {
       return this.authService.register(registerDto);
   }
 
   @Post('login')
+  @Public()
   async login(
     @Body() loginDto: LoginDto, 
     @Res({ passthrough: true }) res: Response 
@@ -88,6 +91,7 @@ export class AuthController {
   }
  
  @Post('refresh')
+ @Public()
   async refresh(
     @Req() req: Request, 
     @Res({ passthrough: true }) res: Response
