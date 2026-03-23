@@ -8,6 +8,8 @@ import { RegisterDto } from '../presentation/dto/registerDto/register.dto';
 import { LoginDto } from '../presentation/dto/loginDto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
+import * as crypto from 'crypto';
+import { MailService } from '../infrastructure/services/mail.service';
 
 @Injectable()
 export class AuthService {

@@ -13,6 +13,9 @@ model User {
 
   provider     String   @default("local")
   googleId     String?  @unique 
+
+  isEmailVerified Boolean @default(false)
+  otps         Otp[]
   
   roleId       String
   role         Role     @relation(fields: [roleId], references: [id])
@@ -43,3 +46,15 @@ model RolePermission {
 
   @@id([roleId, permissionId])
 }
+
+model Otp {
+  id        String   @id @default(uuid())
+  userId    String
+  otp       String   
+  type      String   
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
